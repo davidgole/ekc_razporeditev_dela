@@ -8,9 +8,9 @@ interface User {
 }
 
 export async function GET(): Promise<NextResponse> {
-  const raw = await redis.hgetall<Record<string, string>>('users')
-  if (!raw) return NextResponse.json([])
-  const users: User[] = Object.values(raw).map(u => JSON.parse(u))
+  const raw = await redis.hgetall<Record<string, User>>('users')
+  if (!raw || Object.keys(raw).length === 0) return NextResponse.json([])
+  const users: User[] = Object.values(raw)  // ← odstrani JSON.parse
   return NextResponse.json(users)
 }
 
